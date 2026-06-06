@@ -5,6 +5,10 @@ pipeline {
         SONAR_PROJECT_KEY = 'lab02-project'
     }
 
+    tools {
+        sonarScanner 'sonar-scanner'
+    }
+
     stages {
         stage('Checkout') {
             steps {
