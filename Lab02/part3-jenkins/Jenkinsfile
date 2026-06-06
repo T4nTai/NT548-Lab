@@ -3,10 +3,7 @@ pipeline {
 
     environment {
         SONAR_PROJECT_KEY = 'lab02-project'
-    }
-
-    tools {
-        'hudson.plugins.sonar.SonarRunnerInstallation' 'sonar-scanner'
+        SCANNER_HOME = tool 'sonar-scanner'
     }
 
     stages {
@@ -20,13 +17,13 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('sonarqube') {
-                    sh '''
-                        sonar-scanner \
+                    sh """
+                        ${SCANNER_HOME}/bin/sonar-scanner \
                         -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                         -Dsonar.projectName="Lab02 Project" \
                         -Dsonar.sources=Lab02 \
                         -Dsonar.exclusions=**/*.tf
-                    '''
+                    """
                 }
             }
         }
