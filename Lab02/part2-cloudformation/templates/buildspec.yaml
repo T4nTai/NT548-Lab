@@ -1,0 +1,27 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+    commands:
+      - pip install cfn-lint
+
+  pre_build:
+    commands:
+      - echo "Running cfn-lint to validate CloudFormation templates..."
+      - cfn-lint Lab02/part2-cloudformation/templates/vpc.yaml
+      - cfn-lint Lab02/part2-cloudformation/templates/security.yaml
+      - cfn-lint Lab02/part2-cloudformation/templates/ec2.yaml
+
+  build:
+    commands:
+      - echo "CloudFormation templates validation completed successfully!"
+
+  post_build:
+    commands:
+      - echo "Build completed!"
+
+artifacts:
+  files:
+    - '**/*'
