@@ -1,0 +1,27 @@
+project:
+  name: lab02-part2
+  regions:
+    - us-east-1
+
+tests:
+  vpc-test:
+    template: templates/vpc.yaml
+    parameters:
+      ProjectName: lab02-test
+      VpcCIDR: 10.0.0.0/16
+      PublicSubnetCIDR: 10.0.1.0/24
+      PrivateSubnetCIDR: 10.0.2.0/24
+
+  security-test:
+    template: templates/security.yaml
+    parameters:
+      ProjectName: lab02-test
+      YourIP: 0.0.0.0/0
+
+  ec2-test:
+    template: templates/ec2.yaml
+    parameters:
+      ProjectName: lab02-test
+      InstanceType: t2.micro
+      KeyName: my-keypair
+      AmiId: ami-0c02fb55956c7d316

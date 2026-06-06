@@ -1,0 +1,65 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Security Groups Stack - Lab02 Part2
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: lab02
+  YourIP:
+    Type: String
+    Default: 0.0.0.0/0
+    Description: Your IP address for SSH access
+
+Resources:
+  PublicSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for Public EC2
+      VpcId: !ImportValue
+        Fn::Sub: ${ProjectName}-VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: !Ref YourIP
+          Description: SSH access
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+          Description: HTTP access
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-public-sg
+
+  PrivateSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for Private EC2
+      VpcId: !ImportValue
+        Fn::Sub: ${ProjectName}-VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          SourceSecurityGroupId: !Ref PublicSecurityGroup
+          Description: SSH from Public EC2 only
+      SecurityGroupEgress:
+        - IpProtocol: -1
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub ${ProjectName}-private-sg
+
+Outputs:
+  PublicSecurityGroupId:
+    Value: !Ref PublicSecurityGroup
+    Export:
+      Name: !Sub ${ProjectName}-PublicSGId
+  PrivateSecurityGroupId:
+    Value: !Ref PrivateSecurityGroup
+    Export:
+      Name: !Sub ${ProjectName}-PrivateSGId 
